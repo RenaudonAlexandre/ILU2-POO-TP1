@@ -26,13 +26,16 @@ public class Etal {
 	}
 
 	public String libererEtal() {
+		if (!etalOccupe){
+			throw new IllegalStateException("L'étal n'est pas occupé, impossible de le libérer.");		
+		}
 		etalOccupe = false;
 		StringBuilder chaine = new StringBuilder(
 				"Le vendeur " + vendeur.getNom() + " quitte son étal, ");
 		int produitVendu = quantiteDebutMarche - quantite;
 		if (produitVendu > 0) {
 			chaine.append(
-					"il a vendu " + produitVendu + " parmi " + produit + ".\n");
+					"il a vendu " + produitVendu + " " + produit + " parmi les " + quantiteDebutMarche + " " + produit + " qu'il voulait vendre.\n");
 		} else {
 			chaine.append("il n'a malheureusement rien vendu.\n");
 		}
@@ -48,7 +51,16 @@ public class Etal {
 	}
 
 	public String acheterProduit(int quantiteAcheter, Gaulois acheteur) {
-		if (etalOccupe) {
+
+		if (acheteur == null) {
+			throw new IllegalStateException("L'acheteur n'existe pas, veuillez choisir un acheteur.");
+		}
+		if (quantiteAcheter < 0) {
+			throw new IllegalArgumentException("La quantiter d'achat doit être positive");
+		}
+		if (!etalOccupe) {
+			throw new IllegalStateException("L'étal n'est pas occupé, impossible de faire des achats.");		
+		} else {
 			StringBuilder chaine = new StringBuilder();
 			chaine.append(acheteur.getNom() + " veut acheter " + quantiteAcheter
 					+ " " + produit + " à " + vendeur.getNom());
@@ -71,7 +83,6 @@ public class Etal {
 			}
 			return chaine.toString();
 		}
-		return null;
 	}
 
 	public boolean contientProduit(String produit) {
